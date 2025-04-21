@@ -1,29 +1,46 @@
 import supabase from "../lib/supabaseClient";
-import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom";
 import { MdOutlineMail } from "react-icons/md";
 import { IoKeyOutline } from "react-icons/io5";
 import { TbDoorExit } from "react-icons/tb";
 import Input from "./input";
-import AuthCard from "./authCard";
 import toast from "react-hot-toast";
 import Button from "./button";
+import useAuthStore from "../store/useAuthStore";
+import { useEffect } from "react";
 
 const LoginForm = () => {
     const navigate = useNavigate();
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [message, setMessage] = useState("");
+    const {
+      session,
+      email,
+      password,
+      message,
+      setEmail,
+      setPassword,
+      setMessage,
+      setUser,
+      setSession,
+      clearCredentials,
+    } = useAuthStore();
+
+    useEffect(() => {
+      if (session) {
+        navigate("/dashboard");
+      }
+    }, [session]);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        setMessage("");
+        setMessage;
 
         const { data, error } = await supabase.auth.signInWithPassword({
             email: email,
             password: password,
 
         });
+    
+        
 
         if (error) {
             toast("Email atau password salah!", {
@@ -40,6 +57,10 @@ const LoginForm = () => {
         }
 
         if (data) {
+          const { user, session } = data;
+          setUser(user);
+          setSession(session);
+          clearCredentials();
             toast("Berhasil login ke Mediverse 🎉", {
                 icon: "🚀",
                 duration: 4000,
@@ -56,7 +77,17 @@ const LoginForm = () => {
         }
     }
   return (
-    <AuthCard title="Selamat Datang" description="Masuk dan kelola dashboard Mediverse Anda sekarang">
+    <div className="flex items-center justify-center min-h-screen bg-white">
+      <div className="flex w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <div className="w-1/2 p-8 h-[600px]">
+        <div className="mb-12">
+          <h1 className="text-[15px] font-bold text-purple-700 tracking-wide">
+            <span className="text-black">medi</span>
+            <span className="text-purple-600">verse</span>
+          </h1>
+        </div>  
+          <h1 className="text-4xl font-bold mb-2 mt-14">{"Selamat Datang"}</h1>
+          <p className="mb-12 text-gray-700">{"Masuk dan kelola dashboard Mediverse Anda sekarang"}</p>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-black font-bold mb-2">Email</label>
@@ -87,7 +118,7 @@ const LoginForm = () => {
                 />
             </div>
           </div>
-          <Link to="rest/v1/register" className="underline flex justify-end">Lupa Kata Sandi?</Link>
+          <Link to="/register" className="underline flex justify-end">Lupa Kata Sandi?</Link>
           <div className="mt-6 flex justify-end">
           <Button 
             type="submit"
@@ -96,11 +127,15 @@ const LoginForm = () => {
           />
           </div>
         </form>
-        
-        <span className="flex justify-center mt-20">Tidak punya akun?... 
-          <Link to="rest/v1/register" className="underline text-purple-600">Register</Link>
-        </span>
-  </AuthCard>
+        </div>
+        <div className="w-1/2 bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center rounded-md">
+          <div className="text-center">
+            <h2 className="text-white text-2xl font-bold">{ "Your Personal Healthcare Assistant"}</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
   )
 }
 

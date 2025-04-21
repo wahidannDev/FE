@@ -1,33 +1,23 @@
 import { useNavigate } from "react-router";
 import supabase from "../lib/supabaseClient"
-import { useEffect, useState } from "react";
+import useAuthStore from "../store/useAuthStore";
 
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-
-  useEffect(() => {
-    const getUserEmail = async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (error) {
-        console.error("Error getting user:", error.message);
-        return;
-      }
-      setEmail(data?.user?.email || "Unknown User");
-    };
-
-    getUserEmail();
-  }, []);
+  const { user, setUser, setSession } = useAuthStore();
 
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
-    navigate("/rest/v1/login");
+
+    setUser(null); 
+    setSession(null);
+    navigate("/login");
   };
   return (
     <div>
-      <h1>{`Welcome to dashboard ${email}`}</h1>
+      <h1>{`Welcome, ${user?.email || 'User'} 👋`}</h1>
       <button onClick={signOut}>Log out</button>
     </div>
   )
