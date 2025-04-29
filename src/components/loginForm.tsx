@@ -98,7 +98,7 @@ const LoginForm = () => {
               </span>
               <Input
                 type="email"
-                placeholder="Masukan email"
+                placeholder="Masukan email anda"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
