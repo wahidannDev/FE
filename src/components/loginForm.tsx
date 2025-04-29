@@ -86,7 +86,7 @@ const LoginForm = () => {
             <span className="text-purple-600">verse</span>
           </h1>
         </div>  
-          <h1 className="text-4xl font-bold mb-2 mt-14">{"Selamat Datang mediverse"}</h1>
+          <h1 className="text-4xl font-bold mb-2 mt-14">{"Selamat Datang"}</h1>
           <p className="mb-12 text-gray-700">{"Masuk dan kelola dashboard Mediverse Anda sekarang"}</p>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
